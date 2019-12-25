@@ -22,8 +22,8 @@ public class MoneyTransferTest {
     }
 
     @Test
-    @DisplayName("(Bug)В конце теста должно быть сообщение об ошибке, при попытка перевести " +
-            "с карыт на карту с одинаковым номером")
+    @DisplayName("(Bug) В конце теста должно быть сообщение об ошибке, при попытка перевести " +
+            "с карты на карту с одинаковым номером")
     void shouldTransferMoneyBetweenDiffrentUser() {
         open("http://localhost:9999");
         val loginPage = new LoginPage();
