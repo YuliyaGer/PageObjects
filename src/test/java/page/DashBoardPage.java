@@ -13,44 +13,38 @@ public class DashBoardPage {
     private SelenideElement amountToTransfer=$(".input__control");
     private SelenideElement userFrom = $("[placeholder='0000 0000 0000 0000']");
     private SelenideElement refill = $("[data-test-id='action-transfer']");
-    private SelenideElement buttonReload = $("[data-test-id='action-reload']");
     private SelenideElement notificationError = $("[data-test-id='error-notification']");
 
 
     public void dashBoardPageVisible() {
-
         heading.shouldBe(visible);
     }
-
-    public void transferMoney() {
+    public void transferMoneyToCard1(int amount) {
         buttonBalance1.click();
-        amountToTransfer.setValue("300");
-        userFrom.setValue(DataHelper.CartData.getNumberAccount1());
-        refill.click();
-    }
-    public void transferMoneyToCard1() {
-        buttonBalance1.click();
-        amountToTransfer.setValue("300");
+        amountToTransfer.setValue(String.valueOf(amount));
         userFrom.setValue(DataHelper.CartData.getNumberAccount2());
         refill.click();
     }
 
-    public void transferMoneyToCard2() {
+    public void transferMoneyToCard2(int amount) {
         buttonBalance2.click();
-        amountToTransfer.setValue("300");
+        amountToTransfer.setValue(String.valueOf(amount));
         userFrom.setValue(DataHelper.CartData.getNumberAccount1());
         refill.click();
-
     }
 
-    public void reload() {
-        buttonReload.click();
-        notificationError.shouldBe(exist);
-    }
-    public void transferMoneyToNegativeBalance() {
+    public void transferMoneyToNegativeBalance(int amount) {
         buttonBalance1.click();
-        amountToTransfer.setValue("100000");
+        amountToTransfer.setValue(String.valueOf(amount));
         userFrom.setValue(DataHelper.CartData.getNumberAccount2());
         refill.click();
+        notificationError.shouldBe(visible);
+    }
+    public void transferMoney(int amount) {
+        buttonBalance1.click();
+        amountToTransfer.setValue(String.valueOf(amount));
+        userFrom.setValue(DataHelper.CartData.getNumberAccount1());
+        refill.click();
+        notificationError.shouldBe(visible);
     }
 }

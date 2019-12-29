@@ -2,6 +2,7 @@ package test;
 
 import data.DataHelper;
 import lombok.val;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import page.DashBoardPage;
@@ -11,68 +12,42 @@ import static com.codeborne.selenide.Selenide.open;
 
 public class MoneyTransferTest {
 
-    @Test
-    void shouldTransferMoneyBetweenOwnCards() {
-        open("http://localhost:9999");
-        val loginPage = new LoginPage();
-        val authInfo = DataHelper.getAuthInfo();
-        val verificationPage = loginPage.validLogin(authInfo);
-        val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
-    }
-
-    @Test
-    @DisplayName("(Bug) В конце теста должно быть сообщение об ошибке, при попытка перевести " +
-            "с карты на карту с одинаковым номером")
-    void shouldTransferMoneyBetweenDiffrentUser() {
-        open("http://localhost:9999");
-        val loginPage = new LoginPage();
-        val authInfo = DataHelper.getAuthInfo();
-        val verificationPage = loginPage.validLogin(authInfo);
-        val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
-        val dashBoardPage = new DashBoardPage();
-        dashBoardPage.transferMoney();
+    @BeforeEach
+    void loginVerification () {
+    open("http://localhost:9999");
+    val loginPage = new LoginPage();
+    val authInfo = DataHelper.getAuthInfo();
+    val verificationPage = loginPage.validLogin(authInfo);
+    val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
+    verificationPage.validVerify(verificationCode);
     }
 
     @Test
     @DisplayName("Тест должен пополнять баланс первой карты и проверять в конце правильность")
     void shouldTransferMoneyToBalance1() {
-        open("http://localhost:9999");
-        val loginPage = new LoginPage();
-        val authInfo = DataHelper.getAuthInfo();
-        val verificationPage = loginPage.validLogin(authInfo);
-        val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
         val dashBoardPage = new DashBoardPage();
-        dashBoardPage.transferMoneyToCard1();
+        dashBoardPage.transferMoneyToCard1(300);
         dashBoardPage.dashBoardPageVisible();
     }
 
     @Test
     @DisplayName("Тест должен пополнять баланс второй карты и проверять в конце правильность")
     void shouldTransferMoneyToBalance2() {
-        open("http://localhost:9999");
-        val loginPage = new LoginPage();
-        val authInfo = DataHelper.getAuthInfo();
-        val verificationPage = loginPage.validLogin(authInfo);
-        val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
         val dashBoardPage = new DashBoardPage();
-        dashBoardPage.transferMoneyToCard2();
+        dashBoardPage.transferMoneyToCard2(300);
         dashBoardPage.dashBoardPageVisible();
     }
     @Test
-    @DisplayName("(BUG)Тест уводить баланс в минус")
+    @DisplayName("(BUG_1 Нет сообщения об ошибке при минусовом балансе")
     void shouldTransferMoneyToNegative() {
-        open("http://localhost:9999");
-        val loginPage = new LoginPage();
-        val authInfo = DataHelper.getAuthInfo();
-        val verificationPage = loginPage.validLogin(authInfo);
-        val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
         val dashBoardPage = new DashBoardPage();
-        dashBoardPage.transferMoneyToNegativeBalance();
-        dashBoardPage.dashBoardPageVisible();
+        dashBoardPage.transferMoneyToNegativeBalance(100000);
+    }
+
+    @Test
+    @DisplayName("BUG_2_Нет сообщения об ошибке при одновременном пополнении и списании с одной и той же карты")
+    void shouldTransferMoneyBetweenDifferentUser() {
+        val dashBoardPage = new DashBoardPage();
+        dashBoardPage.transferMoney(300);
     }
 }
